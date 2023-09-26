@@ -17,6 +17,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 if (UNIX)
     set(CMAKE_CXX_FLAGS "-Wall -Wextra -g3")
 endif (UNIX)
+find_package(SFML 2.6 COMPONENTS graphics audio window system REQUIRED)
 
 # Build the project
 add_custom_target(run
@@ -37,3 +38,4 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 if (WIN32)
     target_link_options(${PROJECT_NAME} PRIVATE)
 endif()
+target_link_libraries(${PROJECT_NAME} sfml-graphics sfml-audio sfml-window sfml-system)
