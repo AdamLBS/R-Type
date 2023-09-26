@@ -12,7 +12,7 @@
 class StaticObject : public IEntity
 {
 public:
-    StaticObject(std::string path, float x, float y, int id, float angle = 0, float scaleX = 1, float scaleY = 1, int nbSprite = 1);
+    StaticObject(std::string path, float x, float y, int id, std::string spriteConfigJsonPath, std::string spriteConfigJsonObjectName, float angle = 0, float scaleX = 1, float scaleY = 1, int nbSprite = 1);
     ~StaticObject();
     void setPosition(float x, float y);
     void setRotation(float angle);
@@ -37,6 +37,9 @@ public:
     void setDamage(int damage);
     int getDamage() const;
     void takeDamage(int damage);
+    std::string getSpriteConfigJsonPath() const;
+    std::string getSpriteConfigJsonObjectName() const;
+    void kill();
 
 private:
     std::string _path;

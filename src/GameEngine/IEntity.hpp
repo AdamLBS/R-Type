@@ -37,10 +37,15 @@ public:
     virtual void setDamage(int damage) = 0;
     virtual int getDamage() const = 0;
     virtual void takeDamage(int damage) = 0;
+    virtual std::string getSpriteConfigJsonPath() const = 0;
+    virtual std::string getSpriteConfigJsonObjectName() const = 0;
+    virtual void kill() = 0;
 
 protected:
     float _oldX;
     float _oldY;
     int _id;
+    std::string _spriteConfigJsonPath;
+    std::string _spriteConfigJsonObjectName;
 private:
 };

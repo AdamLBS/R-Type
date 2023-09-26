@@ -7,7 +7,7 @@
 
 #include "Character.hpp"
 
-Character::Character(std::string path, float x, float y, int id, float angle, float scaleX, float scaleY, float speed, int nbSprite, float fireRate, int life, int damage)
+Character::Character(std::string path, float x, float y, int id, float angle, float scaleX, float scaleY, int nbSprite, std::string spriteConfigJsonPath, std::string spriteConfigJsonObjectName)
 {
     _path = path;
     _x = x;
@@ -15,19 +15,21 @@ Character::Character(std::string path, float x, float y, int id, float angle, fl
     _angle = angle;
     _scaleX = scaleX;
     _scaleY = scaleY;
-    _speed = speed;
+    _speed = 3;
     _id = id;
     _oldX = x;
     _oldY = y;
     _nbSprite = nbSprite;
     _created = false;
     _isDead = false;
-    _fireRate = fireRate;
-    _life = life;
-    _damage = damage;
+    _fireRate = 3;
+    _life = 100;
+    _damage = 10;
     _targetFrameDuration = std::chrono::duration<double>(1.0 / _fireRate);
     _lastShootTime = std::chrono::high_resolution_clock::now();
     _currentTime = _lastShootTime;
+    _spriteConfigJsonPath = spriteConfigJsonPath;
+    _spriteConfigJsonObjectName = spriteConfigJsonObjectName;
 }
 
 Character::~Character()
@@ -49,8 +51,8 @@ void Character::setRotation(float angle)
 void Character::move(float x, float y)
 {
     setOldPosition(_x, _y);
-    _x += x;
-    _y += y;
+    _x += x * _speed;
+    _y += y * _speed;
 }
 
 void Character::rotate(float angle)
@@ -159,12 +161,13 @@ int Character::getDamage() const
     return _damage;
 }
 
-void Character::setFireRate(int fireRate)
+void Character::setFireRate(float fireRate)
 {
     _fireRate = fireRate;
+    _targetFrameDuration = std::chrono::duration<double>(1.0 / _fireRate);
 }
 
-int Character::getFireRate() const
+float Character::getFireRate() const
 {
     return _fireRate;
 }
@@ -190,4 +193,33 @@ bool Character::canShoot()
 
     std::this_thread::sleep_for(std::chrono::milliseconds(1));
     return false;
+}
+
+void Character::hurtProjectile(IEntity &self, IEntity &you)
+{
+    auto pos = self.getPosition();
+    Game::instance->createExplosion(std::get<0>(pos), std::get<1>(pos));
+}
+
+void Character::shoot()
+{
+    if (!canShoot())
+        return;
+    auto pos = getPosition();
+    Game::instance->createProjectile(std::get<0>(pos) + 33, std::get<1>(pos) + 2, "shoot_type_right6.png", 0.25, 0.25, 5, getDamage(), "PlayerShoot");
+}
+
+std::string Character::getSpriteConfigJsonPath() const
+{
+    return _spriteConfigJsonPath;
+}
+
+std::string Character::getSpriteConfigJsonObjectName() const
+{
+    return _spriteConfigJsonObjectName;
+}
+
+void Character::kill()
+{
+    _isDead = true;
 }

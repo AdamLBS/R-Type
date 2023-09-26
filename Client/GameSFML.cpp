@@ -15,6 +15,7 @@ GameSFML::GameSFML()
     _ressourceManager = RessourceManager();
     _parser = Parser();
     _core = std::make_unique<Core>();
+    _event_indicator = 0;
 }
 
 GameSFML::~GameSFML()
@@ -49,42 +50,72 @@ void GameSFML::handleEvent()
             case sf::Keyboard::Left:
                 // send left;
                 _eventKey = "LEFT";
+                _event_indicator = 0;
                 break;
             case sf::Keyboard::Right:
                 // send right
                 _eventKey = "RIGHT";
+                _event_indicator = 0;
                 break;
             case sf::Keyboard::Up:
                 // send up
                 _eventKey = "UP";
+                _event_indicator = 1;
                 break;
             case sf::Keyboard::Down:
                 // send down
                 _eventKey = "DOWN";
+                _event_indicator = 2;
                 break;
             case sf::Keyboard::Space:
                 // send shoot
                 _eventKey = "SHOOT";
                 break;
+            case sf::Keyboard::S:
+                // send shield
+                _eventKey = "SHIELD";
+                break;
             default:
                 _eventKey = "";
                 break;
             }
-        }
+        } else
+            _event_indicator = 0;
+    }
+}
+
+void GameSFML::animate()
+{
+    std::map<int, Entity>::iterator it = _parser._entities.begin();
+    while (it != _parser._entities.end())
+    {
+        if (it->second._event_form == "loop")
+            it->second.animateSprite(0);
+        if (it->second._event_form == "event" && _event_indicator != 0)
+            it->second.animateSprite(_event_indicator);
+        if (it->second._event_form == "once")
+            it->second.animateSprite(4);
+        if (it->second._event_form == "event" && _event_indicator == 0)
+            it->second.setInitPos();
+        it++;
+    }
+}
+
+void GameSFML::draw()
+{
+    std::map<int, Entity>::iterator it = _parser._entities.begin();
+    while (it != _parser._entities.end())
+    {
+        _window.draw(it->second.getSprite());
+        it++;
     }
 }
 
 void GameSFML::update()
 {
     _window.clear();
-    std::map<int, Entity>::iterator it = _parser._entities.begin();
-    while (it != _parser._entities.end())
-    {
-        if ((it->second).getRect() > 1)
-            it->second.animateSprite();
-        _window.draw(it->second.getSprite());
-        it++;
-    }
+    animate();
+    draw();
     _window.setView(_view);
     _window.display();
 }

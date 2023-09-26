@@ -1,6 +1,8 @@
 build/
 CMakeUserPresets.json
 r-type_server
+r-type_client
 .vscode/
 .vscode/*
 .vs/
+vg*
