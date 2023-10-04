@@ -30,7 +30,19 @@ public:
     }
     void Send(const message<T>& msg, boost::asio::ip::udp::endpoint endpoint)
     {
-        m_socket.send_to(boost::asio::buffer(&msg, sizeof(msg)), endpoint);
+        std::cout << "sending to adress " << endpoint.address() << " port " << endpoint.port() << std::endl;
+        m_socket.async_send_to(boost::asio::buffer(&msg, sizeof(message<T>)), endpoint,
+                               [this](const boost::system::error_code& ec, std::size_t length)
+                               {
+                                   if (ec)
+                                   {
+                                       std::cout << "[DEBUG] Error sending UDP message: " << ec.message() << std::endl;
+                                       // Handle error
+                                   } else {
+                                        std::cout << "[DEBUG] Sent UDP message" << std::endl;
+                                   }
+                               });
+
     }
 private:
     void Receive()
@@ -45,6 +57,7 @@ private:
                                         }
                                         else
                                         {
+                                            std::cout << "[DEBUG] Error receiving UDP message: " << ec.message() << std::endl;
                                             // Handle error or stop listening
                                         }
                                     });

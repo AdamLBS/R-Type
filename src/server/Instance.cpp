@@ -7,12 +7,9 @@
 
 #include "Instance.hpp"
 
-Instance::Instance(int id) : _threadPool(1), _port((int)(4210 + id)), _udpServer(_io_service, (int)(4210 + id)), _id(id)
+Instance::Instance(int id) : _threadPool(1), _port((int)(4210 + id)), _udpServer((int)(4210 + id)), _id(id)
 {
   _udpServer.setInstance(this);
-  _threadPool.enqueue([this]() {
-    _io_service.run();
-  });
   // use _serverRef to send the UDP server port to the client
 }
 

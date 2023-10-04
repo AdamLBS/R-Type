@@ -20,6 +20,7 @@ class UDPClientImpl : public UDPClient<ACTION> {
             msg.header.size = sizeof(data);
             msg.body.resize(sizeof(data));
             std::memcpy(msg.body.data(), data.data(), sizeof(data));
+            std::cout << "UDPClientImpl::SendEvent" << std::endl;
             Send(msg);
         }
         void setGame(Game *game)

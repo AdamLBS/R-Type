@@ -18,6 +18,7 @@ public:
         m_serverEndpoint = boost::asio::ip::udp::endpoint(boost::asio::ip::address::from_string(host), port);
         m_connection = std::make_unique<UDPConnection<T>>(UDPConnection<T>(m_context, m_qMessagesIn, m_serverEndpoint));
         m_connection->StartListening();
+        std::cout << "UDPClient connected to " << host << ":" << port << std::endl;
         thrContext = std::thread([this]() { m_context.run(); });
 
     }

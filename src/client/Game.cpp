@@ -34,6 +34,7 @@ void Game::run()
         }
         if (isUDPClientConnected == true)
         {
+            std::cout << "UDP CONNECTED " << std::endl;
             createWindow("R-Type", 850, 478);
             while (_window.isOpen())
             {
@@ -41,6 +42,11 @@ void Game::run()
                 {
                     auto msg = _client->Incoming().pop_front().msg;
                     _client->HandleMessage(msg);
+                }
+                if (_udpClient->Incoming().empty() == false)
+                {
+                    auto msg = _udpClient->Incoming().pop_front().msg;
+                    _udpClient->HandleMessage(msg);
                 }
                 // getinfos -> appel de parseMessage
                 handleEvent();
@@ -69,6 +75,7 @@ void Game::handleEvent()
                 evt.body_size = 0;
                 evt.body = "";
                 _udpClient->SendEvent(evt);
+                std::cout << "LEFT" << std::endl;
                 break;
             case sf::Keyboard::Right:
                 evt.ACTION_NAME = ACTION::RIGHT;
@@ -165,5 +172,6 @@ bool Game::connectToUdpServer(std::string host, int port)
     _udpClient = new UDPClientImpl();
     _udpClient->ConnectToServer(host, port);
     isUDPClientConnected = true;
+    std::cout << "UDP Client connected" << std::endl;
     return true;
 }

@@ -25,7 +25,7 @@ struct Client
 class UDPServer
 {
 public:
-    UDPServer(boost::asio::io_service &io_service, int port);
+    UDPServer(int port);
     ~UDPServer();
     void setInstance(Instance *instance) { _instanceRef = instance; }
     void addClient(Client client);
@@ -43,9 +43,10 @@ private:
     boost::asio::ip::udp::endpoint remote_endpoint_;
     std::vector<Client> clients_;
     std::vector<uint8_t> recv_buffer_ = std::vector<uint8_t>(1024);
-    std::thread ping_thread_;
+    std::thread _server_thread;
     std::vector<Client> _clients;
     int _nbPlayers;
     Mutex mutex_;
     Instance *_instanceRef;
+    boost::asio::io_service _io_service;
 };

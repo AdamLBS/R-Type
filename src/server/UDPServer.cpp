@@ -8,7 +8,7 @@
 #include "UDPServer.hpp"
 #include "Server.hpp"
 
-UDPServer::UDPServer(boost::asio::io_service &io_service, int port) : socket_(io_service, boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(), port))
+UDPServer::UDPServer(int port) : socket_(_io_service, boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(), port))
 {
     _nbPlayers = 0;
     _clients = std::vector<Client>();
@@ -16,7 +16,7 @@ UDPServer::UDPServer(boost::asio::io_service &io_service, int port) : socket_(io
     {
         std::cout << "Server listening on port " << port << std::endl;
         start_receive();
-        ping_thread_ = std::thread(&UDPServer::send_ping_to_clients, this);
+        _server_thread = std::thread([this]() { _io_service.run(); });
     }
     catch (const std::exception &e)
     {
@@ -32,9 +32,12 @@ void UDPServer::start_receive()
 {
     try
     {
-        socket_.async_receive_from(
-            boost::asio::buffer(recv_buffer_), remote_endpoint_, [this](const std::error_code &error, std::size_t bytes_recvd)
-            { handler(error, bytes_recvd); });
+        socket_.async_receive_from(boost::asio::buffer(recv_buffer_), remote_endpoint_,
+                                   [this](const std::error_code &error, std::size_t bytes_recvd) {
+                                    std::cout << "Received " << bytes_recvd << " bytes" << std::endl;
+                                    start_receive();
+                                    //    handler(error, bytes_recvd);
+                                   });
     }
     catch (const std::exception &e)
     {
@@ -46,91 +49,35 @@ void UDPServer::handler(const std::error_code &error, std::size_t bytes_recvd)
 {
     if (!error)
     {
-        mutex_.lock();
-        Client client{remote_endpoint_, std::chrono::system_clock::now()};
-        if (std::find_if(clients_.begin(), clients_.end(), [&client](const Client &c)
-                         { return c.client.address() == client.client.address() && c.client.port() == client.client.port(); }) == clients_.end())
-        {
-            clients_.push_back(client);
-            std::cout << "New client connected: " << client.client.address().to_string() << ":" << client.client.port() << std::endl;
-            // add the new client connected to this instance of the game in the instance client list
-            Client newClient = {client.client, std::chrono::system_clock::now()};
-            addClient(newClient);
-            std::cout << "Connected at : " << std::chrono::system_clock::to_time_t(client.timestamp) << std::endl;
-            std::cout << "vector size : " << clients_.size() << std::endl;
-        }
-        Event evt;
-        EventHandler eventHandler;
-        evt = eventHandler.decodeMessage(recv_buffer_);
-        std::cout << "Received data: " << evt.body << std::endl;
-
-        if (evt.ACTION_NAME == ACTION::PONG)
-        {
-            auto it = std::find_if(clients_.begin(), clients_.end(), [&client](const Client &c)
-                                   { return c.client.address() == client.client.address() && c.client.port() == client.client.port(); });
-            if (it != clients_.end())
-            {
-                it->timestamp = std::chrono::system_clock::now();
-                std::cout << "updated timestamp for client " << it->client.address().to_string() << ":" << it->client.port() << std::endl;
-            }
-        } else {
-            handleEvents(evt);
-        }
-        mutex_.unlock();
+        std::cout << "Received " << bytes_recvd << " bytes" << std::endl;
         start_receive();
-    }
-    else if (error.value() == boost::asio::error::eof)
-    {
-        // Connection was closed by the remote host (client left)
-        // std::cout << "Client disconnected." << std::endl;
-        mutex_.lock();
-        auto it = std::find_if(clients_.begin(), clients_.end(), [this](const Client &c)
-                               { return c.client.address() == remote_endpoint_.address() && c.client.port() == remote_endpoint_.port(); });
-        if (it != clients_.end())
-        {
-            std::cout << "Client " << it->client.address().to_string() << ":" << it->client.port() << " disconnected." << std::endl;
-            clients_.erase(it); // Erase the found element
-        }
-        mutex_.unlock();
-        start_receive();
-    }
-    else
-    {
-        mutex_.lock();
-        auto it = std::find_if(clients_.begin(), clients_.end(), [this](const Client &c)
-                               { return c.client.address() == remote_endpoint_.address() && c.client.port() == remote_endpoint_.port(); });
-        if (it != clients_.end())
-        {
-            std::cout << "Client " << it->client.address().to_string() << ":" << it->client.port() << " disconnected." << std::endl;
-            clients_.erase(it); // Erase the found element
-        }
-        mutex_.unlock();
-        start_receive();
+    } else {
+        std::cerr << "Error receiving data: " << error.message() << std::endl;
     }
 }
 
 void UDPServer::send_ping_to_clients()
 {
-    while (true)
-    {
-        mutex_.lock();
-        for (auto it = clients_.begin(); it != clients_.end();)
-        {
-            std::cout << "Client " << it->client.address().to_string() << ":" << it->client.port() << " last ping: " << std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - it->timestamp).count() << std::endl;
-            if (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - it->timestamp).count() > 5)
-            {
-                std::cout << "Client " << it->client.address().to_string() << ":" << it->client.port() << " timed out." << std::endl;
-                it = clients_.erase(it);
-            }
-            else
-            {
-                socket_.send_to(boost::asio::buffer("Ping", 4), it->client);
-                ++it;
-            }
-        }
-        mutex_.unlock();
-        std::this_thread::sleep_for(std::chrono::seconds(2));
-    }
+    // while (true)
+    // {
+    //     mutex_.lock();
+    //     for (auto it = clients_.begin(); it != clients_.end();)
+    //     {
+    //         std::cout << "Client " << it->client.address().to_string() << ":" << it->client.port() << " last ping: " << std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - it->timestamp).count() << std::endl;
+    //         if (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - it->timestamp).count() > 5)
+    //         {
+    //             std::cout << "Client " << it->client.address().to_string() << ":" << it->client.port() << " timed out." << std::endl;
+    //             it = clients_.erase(it);
+    //         }
+    //         else
+    //         {
+    //             socket_.send_to(boost::asio::buffer("Ping", 4), it->client);
+    //             ++it;
+    //         }
+    //     }
+    //     mutex_.unlock();
+    //     std::this_thread::sleep_for(std::chrono::seconds(2));
+    // }
 }
 
 void UDPServer::addClient(Client client)

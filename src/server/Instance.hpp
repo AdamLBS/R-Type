@@ -32,7 +32,6 @@ class Instance
     private:
         int _id;
         int _port;
-        boost::asio::io_service _io_service;
         UDPServer _udpServer;
         ServerClass *_serverRef;
         ThreadPool _threadPool;
