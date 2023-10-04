@@ -7,6 +7,7 @@
 
 #include "Game.hpp"
 
+
 Game::Game() : _threadPool(1)
 {
     _ressourceManager = RessourceManager();
@@ -67,31 +68,31 @@ void Game::handleEvent()
                 evt.ACTION_NAME = ACTION::LEFT;
                 evt.body_size = 0;
                 evt.body = "";
-                _udpClient->sendEvent(evt, _udpClient->getHost(), _udpClient->getPort());
+                // _udpClient->SendEvent(evt);
                 break;
             case sf::Keyboard::Right:
                 evt.ACTION_NAME = ACTION::RIGHT;
                 evt.body_size = 0;
                 evt.body = "";
-                _udpClient->sendEvent(evt, _udpClient->getHost(), _udpClient->getPort());
+                // _udpClient->SendEvent(evt);
                 break;
             case sf::Keyboard::Up:
                 evt.ACTION_NAME = ACTION::UP;
                 evt.body_size = 0;
                 evt.body = "";
-                _udpClient->sendEvent(evt, _udpClient->getHost(), _udpClient->getPort());
+                // _udpClient->SendEvent(evt);
                 break;
             case sf::Keyboard::Down:
                 evt.ACTION_NAME = ACTION::DOWN;
                 evt.body_size = 0;
                 evt.body = "";
-                _udpClient->sendEvent(evt, _udpClient->getHost(), _udpClient->getPort());
+                // _udpClient->SendEvent(evt);
                 break;
             case sf::Keyboard::Space:
                 evt.ACTION_NAME = ACTION::SHOOT;
                 evt.body_size = 0;
                 evt.body = "";
-                _udpClient->sendEvent(evt, _udpClient->getHost(), _udpClient->getPort());
+                // _udpClient->SendEvent(evt);
                 break;
             case sf::Keyboard::Escape:
                 _window.close();
@@ -161,15 +162,8 @@ bool Game::connectToServer(std::string host, int port)
 
 bool Game::connectToUdpServer(std::string host, int port)
 {
-    _udpClient = new UDPClient();
-    _udpClient->connect_to(host, port);
-    isUDPClientConnected = true;
-    _threadPool.enqueue([this] {
-        while (true)
-        {
-            std::string data = _udpClient->receive_data();
-            std::cout << "data: " << data << std::endl;
-        }
-    });
+    // _udpClient = new UDPClientImpl();
+    // _udpClient->ConnectToServer(host, port);
+    // isUDPClientConnected = true;
     return true;
 }
