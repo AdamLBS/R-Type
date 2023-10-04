@@ -13,13 +13,13 @@
 #include "Parser.hpp"
 #include "JsonParser.hpp"
 #include "TCPClientImpl.hpp"
-// #include "UDPClientImpl.hpp"
+#include "UDPClientImpl.hpp"
 #include "../global/EventHandler.hpp"
 #include <thread>
 #include <queue>
 #include "ThreadPool.hpp"
 class TCPClientImpl;
-// class UDPClientImpl;
+class UDPClientImpl;
 class Game
 {
 public:
@@ -44,7 +44,7 @@ private:
     RessourceManager _ressourceManager;
     Parser _parser;
     TCPClientImpl *_client;
-    // UDPClientImpl *_udpClient;
+    UDPClientImpl *_udpClient;
     int _event_indicator;
     std::queue<std::vector<uint8_t>> _queue;
     ThreadPool _threadPool;

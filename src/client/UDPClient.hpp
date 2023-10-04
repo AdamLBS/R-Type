@@ -2,10 +2,6 @@
 
 #ifndef HEADER_UDPCLIENT
 #define HEADER_UDPCLIENT
-
-#include <boost/asio.hpp>
-#include "ThreadSafeQueue.hpp"
-#include "Messages.hpp"
 #include "UDPConnection.hpp"
 #include <thread>
 
@@ -31,7 +27,7 @@ public:
         m_connection->Send(msg, GetServerEndpoint());
     }
 
-    ThreadSafeQueue<owned_message<T>>& Incoming()
+    ThreadSafeQueue<owned_message_udp<T>>& Incoming()
     {
         return m_qMessagesIn;
     }
@@ -45,7 +41,7 @@ private:
     std::unique_ptr<UDPConnection<T>> m_connection;
     boost::asio::io_context m_context;
     boost::asio::ip::udp::endpoint m_serverEndpoint;
-    ThreadSafeQueue<owned_message<T>> m_qMessagesIn;
+    ThreadSafeQueue<owned_message_udp<T>> m_qMessagesIn;
     std::string _host;
     int _port;
     std::thread thrContext;

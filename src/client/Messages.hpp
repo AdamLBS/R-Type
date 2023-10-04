@@ -7,8 +7,6 @@
 
 #ifndef MESSAGES_HPP_
 #define MESSAGES_HPP_
-#include "TCPConnection.hpp"
-
 template <typename T>
 struct message_header
 {
@@ -31,4 +29,11 @@ struct owned_message {
     message<T> msg;
 };
 
+template <typename T>
+class UDPConnection;
+template <typename T>
+struct owned_message_udp {
+    std::shared_ptr<UDPConnection<T>> remote = nullptr;
+    message<T> msg;
+};
 #endif /* !MESSAGES_HPP_ */
