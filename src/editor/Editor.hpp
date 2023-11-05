@@ -11,9 +11,9 @@
 #include <map>
 #include <memory>
 #include <tuple>
+#include "../client/Input.hpp"
 #include "../client/SFML/EntitySFML.hpp"
 #include "../global/JsonParser.hpp"
-#include "../client/Input.hpp"
 
 class Editor {
    public:

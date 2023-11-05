@@ -9,10 +9,10 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
-#include "../UDPClient.hpp"
-#include "RessourceManagerSDL.hpp"
-#include "EntitySDL.hpp"
 #include "../IDisplay.hpp"
+#include "../UDPClient.hpp"
+#include "EntitySDL.hpp"
+#include "RessourceManagerSDL.hpp"
 
 class DisplaySDL : public IDisplay {
    public:
@@ -27,7 +27,7 @@ class DisplaySDL : public IDisplay {
     std::shared_ptr<IEntity> createEntity(IEntity::EntityInfos entityInfos);
     std::shared_ptr<IEntity> createSprite(IEntity::EntityInfos entityInfos);
     std::shared_ptr<IEntity> createText(IEntity::EntityInfos entityInfos);
-    void closeWindow() {  };
+    void closeWindow(){};
 
    private:
     SDL_Window* _window;

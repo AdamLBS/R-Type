@@ -6,10 +6,10 @@
 */
 
 #include "Game.hpp"
-#include "SFML/DisplaySFML.hpp"
-#include "SDL/DisplaySDL.hpp"
-#include "TCPClientImpl.hpp"
 #include "InstanceMenu.hpp"
+#include "SDL/DisplaySDL.hpp"
+#include "SFML/DisplaySFML.hpp"
+#include "TCPClientImpl.hpp"
 
 Game::Game() : _threadPool(3) {
     _event_indicator = 0;
@@ -22,14 +22,12 @@ Game::Game() : _threadPool(3) {
     _instanceMenu = std::make_unique<InstanceMenu>(this);
 }
 
-Game::~Game() {
-}
+Game::~Game() {}
 
 void Game::setLibToUse() {
     if (_lib == Lib::SDL) {
         _display = std::make_unique<DisplaySDL>();
-    }
-    else if (_lib == Lib::SFML) {
+    } else if (_lib == Lib::SFML) {
         _display = std::make_unique<DisplaySFML>();
     }
 }

@@ -1,6 +1,6 @@
 #include "engine/Core.hpp"
-#include "server/Server.hpp"
 #include "global/EventHandler.hpp"
+#include "server/Server.hpp"
 
 int main() {
     // TODO: Deprecated

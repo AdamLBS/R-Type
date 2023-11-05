@@ -7,8 +7,8 @@
 
 #ifndef INPUT_HEADER_GUARD
 #define INPUT_HEADER_GUARD
-#include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
+#include <SFML/Graphics.hpp>
 #include <iostream>
 #include <map>
 #include <memory>
@@ -16,7 +16,8 @@
 
 class Input {
    public:
-    Input(std::string texture, std::string textureHover, std::string textValue, std::shared_ptr<RessourceManagerSFML> ressourceManager);
+    Input(std::string texture, std::string textureHover, std::string textValue,
+          std::shared_ptr<RessourceManagerSFML> ressourceManager);
     ~Input(){};
     void createSprite();
     void setSpriteRect(sf::IntRect rect);

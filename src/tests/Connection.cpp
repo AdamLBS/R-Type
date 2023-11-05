@@ -7,9 +7,9 @@
 
 #include <gtest/gtest.h>
 #include "../global/EventHandler.hpp"
+#include "../global/JsonParser.hpp"
 #include "../server/TCPServer.hpp"
 #include "../server/UDPServer.hpp"
-#include "../global/JsonParser.hpp"
 
 TEST(READJSON, can_read_json) {
     JsonParser jsonParser;
@@ -21,7 +21,7 @@ TEST(READJSON, can_read_json) {
 // Test: Check if the client can connect to the UDP Server
 TEST(UDPServer, can_bind_udp_server) {
     boost::asio::io_service _io_service;
-    UDPServer *udpServer = new UDPServer(_io_service, 4210);
+    UDPServer* udpServer = new UDPServer(_io_service, 4210);
     bool clientIsConnected = true;
     ASSERT_EQ(clientIsConnected, true);
 }
