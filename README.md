@@ -10,7 +10,7 @@ The project is split in 3 parts :
  - Server side (in UDP and TCP protocol)
  - Game Engine
 
-<img width="949" alt="CleanShot 2023-10-09 at 11 05 40@2x" src="https://github.com/AdamLBS/R-Type/assets/91624379/0e3d18fb-7132-4f78-a555-86ab2678dd3e">
+<img width="949" alt="CleanShot 2023-10-09 at 11 05 40@2x" src="https://uploads.admlbs.fr/r-type/assets/parts.png">
 
 ### Client side
 The Client is the player's program. It connects to the server, creates/joins a game instance and displays the game. It is itself divided into 3 parts : 

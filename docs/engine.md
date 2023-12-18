@@ -1,5 +1,5 @@
 # The Engine
-<img width="942" alt="Screenshot 2023-10-30 at 18 22 39" src="https://github.com/AdamLBS/R-Type/assets/91624201/6eca3988-3ac8-45cb-8331-b17800200e8e">
+<img width="942" alt="Screenshot 2023-10-30 at 18 22 39" src="https://uploads.admlbs.fr/r-type/assets/engine.png">
 
 
 The engine works with a Core, Entity and EntityType.
