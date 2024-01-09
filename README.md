@@ -4,6 +4,14 @@
 Main C++ project in 3rd year at Epitech.
 The R-TYPE is a mutliplayer game based on existing R-Type game.
 
+## Trailer
+
+
+
+https://github.com/AdamLBS/R-Type/assets/30260219/5ea93bac-7ca3-450c-b0d6-718f513e5613
+
+
+
 ## Project parts
 The project is split in 3 parts :
  - Client side
